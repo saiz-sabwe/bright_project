@@ -1,0 +1,30 @@
+# version: '3.8'
+
+networks:
+  web_network:
+    external: true
+
+services:
+  django_bright:
+    build: .
+    container_name: bright_app
+    image: bright_django:latest
+    command: python3 manage.py runserver  0.0.0.0:8000 --insecure
+    restart: always
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8003:8000"
+    volumes:
+      - .:/app
+    networks:
+      - web_network
