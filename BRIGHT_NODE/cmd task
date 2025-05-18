@@ -1,0 +1,11 @@
+
+#celery
+redis-server
+celery -A BES_MTN worker -l info -P solo
+celery -A data_share beat -l info
+
+
+#localhost
+loclx account login
+PPN53xYgAqxQzhQPlYSeXltzxUPlDY4bc1H2UPwP
+loclx tunnel http --to localhost:8000
