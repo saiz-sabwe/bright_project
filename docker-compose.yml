@@ -4,6 +4,9 @@ networks:
   web_network:
     external: true
 
+volumes:
+  pg_data:
+
 services:
   django_bright:
     build: .
@@ -23,8 +26,28 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - .:/app
+    depends_on:
+      - pgsql
+    environment:
+      - DB_NAME=bright_db
+      - DB_USER=bright_user
+      - DB_PASSWORD=bright_pass
+      - DB_HOST=pgsql
+      - DB_PORT=5432
+    networks:
+      - web_network
+
+  pgsql:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: bright_db
+      POSTGRES_USER: bright_user
+      POSTGRES_PASSWORD: bright_pass
+    volumes:
+      - pg_data:/var/lib/postgresql/data
     networks:
       - web_network

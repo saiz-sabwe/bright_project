@@ -2,6 +2,12 @@ FROM python:3.11-slim-bullseye AS builder
 
 WORKDIR /app
 
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    python3-dev \
+    libpq-dev
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt \
     && pip install gunicorn uvicorn
@@ -10,6 +16,11 @@ FROM python:3.11-slim-bullseye
 
 LABEL authors="saiz"
 LABEL version="0.1"
+
+# Install ONLY the runtime dependencies for PostgreSQL
+RUN apt-get update && apt-get install -y \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
