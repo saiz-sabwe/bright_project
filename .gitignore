@@ -35,6 +35,7 @@ venv.bak/
 # Secrets et variables d’environnement
 .env
 .env.*
+.env.**
 
 # VS Code / PyCharm
 .vscode/
