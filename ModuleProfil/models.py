@@ -1,6 +1,10 @@
+import random
+from datetime import timedelta
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.utils import timezone
 
 from ModuleServices.models import Model_Service
 
@@ -25,3 +29,15 @@ class Model_Profil(models.Model):
         verbose_name = "Profil"
         verbose_name_plural = "Profils"
         ordering = ("-create",)
+
+class Model_OTP(models.Model):
+    phone_number = models.CharField(max_length=20, unique=True)
+    code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        return timezone.now() < self.created_at + timedelta(minutes=55)
+
+    @staticmethod
+    def generate_otp():
+        return str(random.randint(100000, 999999))

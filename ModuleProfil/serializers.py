@@ -5,14 +5,16 @@ from .models import Model_Profil
 
 class RegisterSerializer(serializers.Serializer):
     username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
     pseudo = serializers.CharField()
+    password = serializers.CharField(write_only=True, required=False)
 
     def create(self, validated_data):
         username = validated_data["username"]
+        password = validated_data.get("password") or User.objects.make_random_password()
+
         user = User.objects.create_user(
             username=username,
-            password=validated_data["password"]
+            password=password
         )
         profil = Model_Profil.objects.create(
             user=user,
@@ -20,7 +22,6 @@ class RegisterSerializer(serializers.Serializer):
             phone_number=username
         )
         return user, profil
-
 
 
 class ProfilSerializer(serializers.ModelSerializer):

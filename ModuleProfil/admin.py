@@ -1,6 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from .models import Model_Profil
+from .models import Model_Profil, Model_OTP
 
 
 @admin.register(Model_Profil)
@@ -19,3 +19,10 @@ class ModelProfilAdmin(ImportExportModelAdmin):
             obj.create_by = request.user
         obj.update_by = request.user
         super().save_model(request, obj, form, change)
+
+@admin.register(Model_OTP)
+class ModelOTPAdmin(admin.ModelAdmin):
+    list_display = ('id', 'phone_number', 'code', 'created_at')
+    search_fields = ('phone_number', 'code')
+    list_filter = ('created_at',)
+    ordering = ('-created_at',)
