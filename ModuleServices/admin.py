@@ -1,67 +1,67 @@
-from django.contrib import admin
-from import_export.admin import ImportExportModelAdmin
-from .models import Model_Service, Model_Demande, Model_Professionnel
-
-
-@admin.action(description="✅ Valider les demandes sélectionnées")
-def valider_demandes(modeladmin, request, queryset):
-    queryset.update(statut="acceptee")
-
-@admin.action(description="❌ Refuser les demandes sélectionnées")
-def refuser_demandes(modeladmin, request, queryset):
-    queryset.update(statut="refusee")
-
-
-@admin.register(Model_Service)
-class ModelServiceAdmin(ImportExportModelAdmin):
-    list_display = (
-        'id', 'nom', 'description', 'create', 'last_update', 'create_by', 'update_by'
-    )
-    search_fields = ('nom', 'description')
-    list_filter = ('create', 'last_update', 'create_by', 'update_by')
-    readonly_fields = ('create', 'last_update', 'create_by', 'update_by')
-    ordering = ('-create',)
-
-    def save_model(self, request, obj, form, change):
-        if not obj.pk:
-            obj.create_by = request.user
-        obj.update_by = request.user
-        super().save_model(request, obj, form, change)
-
-
-@admin.register(Model_Demande)
-class ModelDemandeAdmin(ImportExportModelAdmin):
-    list_display = (
-        'id', 'profil', 'service', 'professionnel', 'date_souhaitee',
-        'adresse', 'statut', 'create', 'last_update', 'create_by', 'update_by'
-    )
-    search_fields = ('profil__pseudo', 'adresse', 'description')
-    list_filter = (
-        'statut', 'service', 'professionnel', 'create', 'last_update'
-    )
-    readonly_fields = ('create', 'last_update', 'create_by', 'update_by')
-    ordering = ('-create',)
-    actions = [valider_demandes, refuser_demandes]
-
-    def save_model(self, request, obj, form, change):
-        if not obj.pk:
-            obj.create_by = request.user
-        obj.update_by = request.user
-        super().save_model(request, obj, form, change)
-
-@admin.register(Model_Professionnel)
-class ModelProfessionnelAdmin(ImportExportModelAdmin):
-    list_display = (
-        'id', 'profil', 'titre', 'note',
-        'create', 'last_update', 'create_by', 'update_by'
-    )
-    search_fields = ('profil__pseudo', 'titre')
-    list_filter = ('note', 'create', 'last_update')
-    readonly_fields = ('create', 'last_update', 'create_by', 'update_by')
-    ordering = ('-create',)
-
-    def save_model(self, request, obj, form, change):
-        if not obj.pk:
-            obj.create_by = request.user
-        obj.update_by = request.user
-        super().save_model(request, obj, form, change)
+# from django.contrib import admin
+# from import_export.admin import ImportExportModelAdmin
+# from .models import Model_Service, Model_Demande, Model_Professionnel
+#
+#
+# @admin.action(description="✅ Valider les demandes sélectionnées")
+# def valider_demandes(modeladmin, request, queryset):
+#     queryset.update(statut="acceptee")
+#
+# @admin.action(description="❌ Refuser les demandes sélectionnées")
+# def refuser_demandes(modeladmin, request, queryset):
+#     queryset.update(statut="refusee")
+#
+#
+# @admin.register(Model_Service)
+# class ModelServiceAdmin(ImportExportModelAdmin):
+#     list_display = (
+#         'id', 'nom', 'description', 'create', 'last_update', 'create_by', 'update_by'
+#     )
+#     search_fields = ('nom', 'description')
+#     list_filter = ('create', 'last_update', 'create_by', 'update_by')
+#     readonly_fields = ('create', 'last_update', 'create_by', 'update_by')
+#     ordering = ('-create',)
+#
+#     def save_model(self, request, obj, form, change):
+#         if not obj.pk:
+#             obj.create_by = request.user
+#         obj.update_by = request.user
+#         super().save_model(request, obj, form, change)
+#
+#
+# @admin.register(Model_Demande)
+# class ModelDemandeAdmin(ImportExportModelAdmin):
+#     list_display = (
+#         'id', 'profil', 'service', 'professionnel', 'date_souhaitee',
+#         'adresse', 'statut', 'create', 'last_update', 'create_by', 'update_by'
+#     )
+#     search_fields = ('profil__pseudo', 'adresse', 'description')
+#     list_filter = (
+#         'statut', 'service', 'professionnel', 'create', 'last_update'
+#     )
+#     readonly_fields = ('create', 'last_update', 'create_by', 'update_by')
+#     ordering = ('-create',)
+#     actions = [valider_demandes, refuser_demandes]
+#
+#     def save_model(self, request, obj, form, change):
+#         if not obj.pk:
+#             obj.create_by = request.user
+#         obj.update_by = request.user
+#         super().save_model(request, obj, form, change)
+#
+# @admin.register(Model_Professionnel)
+# class ModelProfessionnelAdmin(ImportExportModelAdmin):
+#     list_display = (
+#         'id', 'profil', 'titre', 'note',
+#         'create', 'last_update', 'create_by', 'update_by'
+#     )
+#     search_fields = ('profil__pseudo', 'titre')
+#     list_filter = ('note', 'create', 'last_update')
+#     readonly_fields = ('create', 'last_update', 'create_by', 'update_by')
+#     ordering = ('-create',)
+#
+#     def save_model(self, request, obj, form, change):
+#         if not obj.pk:
+#             obj.create_by = request.user
+#         obj.update_by = request.user
+#         super().save_model(request, obj, form, change)
