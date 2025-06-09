@@ -29,6 +29,7 @@ services:
       - "8008:8000"
     volumes:
       - .:/app
+      - ./media:/app/media
     depends_on:
       - pgsql
     environment:
