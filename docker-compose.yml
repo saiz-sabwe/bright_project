@@ -26,18 +26,12 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
-      - "8008:8000"
+      - "8010:8000"
     volumes:
       - .:/app
       - ./media:/app/media
     depends_on:
       - pgsql
-    environment:
-      - DB_NAME=bright_db
-      - DB_USER=bright_user
-      - DB_PASSWORD=bright_pass
-      - DB_HOST=pgsql
-      - DB_PORT=5432
     networks:
       - web_network
 
