@@ -1,9 +1,13 @@
 from django.utils.crypto import get_random_string
 from rest_framework import generics, permissions
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny
-from rest_framework_simplejwt.tokens import RefreshToken
-
-from .models import Model_Profil
+from rest_framework.views import APIView
+from rest_framework.response import Response
+import urllib.parse
+import requests
+from .models import Model_Profil, Model_OTP
 from .serializers import ProfilSerializer
 
 
@@ -31,13 +35,6 @@ class ProfilPartialUpdateView(generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
-from django.contrib.auth.models import User
-from rest_framework.permissions import AllowAny
-from rest_framework.views import APIView
-from rest_framework.response import Response
-import urllib.parse
-import requests
-from .models import Model_OTP
 
 class SendOTPView(APIView):
     permission_classes = [AllowAny]
@@ -52,45 +49,52 @@ class SendOTPView(APIView):
         if existing_user is None:
             return Response({"detail": "Le paramètre 'existing_user' est requis (true ou false)."}, status=400)
 
-        user_exists = User.objects.filter(username=phone).exists()
+        user_qs = User.objects.filter(username=phone)
+        user_exists = user_qs.exists()
 
+        # Vérifications de cohérence
         if existing_user is True and not user_exists:
             return Response({"detail": "Aucun utilisateur associé à ce numéro."}, status=400)
 
         if existing_user is False and user_exists:
             return Response({"detail": "Ce numéro est déjà associé à un utilisateur."}, status=400)
 
-        otp = Model_OTP.generate_otp()
-        message = f"Bienvenue sur BRIGHT\nVotre code de verification est {otp}"
-        encoded_message = urllib.parse.quote(message)
 
-        url = (
-            "https://api2.dream-digital.info/api/SendSMS"
-            f"?api_id=API18753314170"
-            f"&api_password=90crxTbtS9"
-            f"&sms_type=T"
-            f"&encoding=T"
-            f"&sender_id=BRIGHT-Co"
-            f"&phonenumber={phone}"
-            f"&textmessage={encoded_message}"
-        )
+        #  Nettoyer les anciens OTP actifs
+        Model_OTP.deactivate_old_otps(phone)
 
+        #  Création d’un nouvel OTP
+        otp_instance = Model_OTP.create_otp(phone_number=phone)
+
+        #  Préparation du message
+        message = f"Bienvenue sur TEMPO\nVotre code de verification est {otp_instance.otp_code}"
+        # print(message)  # Pour debug
+
+        #  Si tu veux envoyer via SMS : décommente cette section
         try:
+            encoded_message = urllib.parse.quote(message)
+            url = (
+                "https://api2.dream-digital.info/api/SendSMS"
+                f"?api_id=API18753314170"
+                f"&api_password=90crxTbtS9"
+                f"&sms_type=T"
+                f"&encoding=T"
+                f"&sender_id=TEMPO-Co"
+                f"&phonenumber={phone}"
+                f"&textmessage={encoded_message}"
+            )
+
             response = requests.get(url)
             result = response.json()
             if result.get("status") == "S":
-                Model_OTP.objects.update_or_create(phone_number=phone, defaults={"code": otp})
                 return Response({"detail": "OTP envoyé avec succès."})
             return Response({"detail": f"Erreur SMS: {result.get('remarks')}"}, status=400)
         except Exception as e:
             return Response({"detail": f"Erreur d'envoi: {str(e)}"}, status=500)
 
-        # Model_OTP.objects.update_or_create(phone_number=phone, defaults={"code": otp})
-        # print(f"Bienvenue sur BRIGHT\nVotre code de verification est {otp}")
-        # return Response({"detail": "OTP envoyé pour connexion."})
-
 class VerifyOTPView(APIView):
     permission_classes = [AllowAny]
+
     def post(self, request):
         phone = request.data.get("phone_number")
         code = request.data.get("otp")
@@ -99,27 +103,29 @@ class VerifyOTPView(APIView):
         if not all([phone, code, pseudo]):
             return Response({"detail": "Champs requis : phone_number, otp, pseudo"}, status=400)
 
-        try:
-            otp_obj = Model_OTP.objects.get(phone_number=phone)
-        except Model_OTP.DoesNotExist:
-            return Response({"detail": "OTP non trouvé."}, status=400)
-
-        if not otp_obj.is_valid() or str(otp_obj.code) != str(code):
-            return Response({"detail": "OTP invalide ou expiré."}, status=400)
-
         random_password = get_random_string(length=8)
         user = User.objects.create_user(username=phone, password=random_password)
-        profil = Model_Profil.objects.create(user=user, phone_number=phone, pseudo=pseudo)
-        otp_obj.delete()
+        if not user:
+            return Response({"detail": "echec de verification."}, status=400)
 
-        refresh = RefreshToken.for_user(user)
+        profil = Model_Profil.objects.create(user=user, phone_number=phone, pseudo=pseudo)
+        if not profil:
+            return Response({"detail": "echec de verification.."}, status=400)
+
+        is_valid = Model_OTP.verify_otp(phone_number=phone, code=code)
+        if not is_valid:
+            return Response({"detail": "OTP invalide ou expiré."}, status=400)
+
+
+        token, _ = Token.objects.get_or_create(user=user)
+
         return Response({
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
             "profil": {
                 "id": profil.id,
                 "pseudo": profil.pseudo,
-                "phone_number": profil.phone_number
+                "phone_number": profil.phone_number,
+                "token": str(token),
+                "uuid": profil.uuid
             }
         })
 
@@ -128,41 +134,50 @@ class LoginOTPRequestView(APIView):
 
     def post(self, request):
         phone = request.data.get("phone_number")
+
         if not phone:
             return Response({"detail": "Numéro requis"}, status=400)
 
-        if not User.objects.filter(username=phone).exists():
-            return Response({"detail": "Utilisateur inexistant."}, status=400)
-
-        otp = Model_OTP.generate_otp()
-        message = f"Connexion BRIGHT\nVotre code de verification est {otp}"
-        encoded_message = urllib.parse.quote(message)
-
-        url = (
-            "https://api2.dream-digital.info/api/SendSMS"
-            f"?api_id=API18753314170"
-            f"&api_password=90crxTbtS9"
-            f"&sms_type=T"
-            f"&encoding=T"
-            f"&sender_id=BRIGHT-Co"
-            f"&phonenumber={phone}"
-            f"&textmessage={encoded_message}"
-        )
-
         try:
+            user = User.objects.get(username=phone)
+            profil = Model_Profil.objects.get(user=user)
+        except User.DoesNotExist:
+            return Response({"detail": "Utilisateur inexistant."}, status=400)
+        except Model_Profil.DoesNotExist:
+            return Response({"detail": "Profil associé non trouvé."}, status=400)
+
+        # 🔁 Désactivation des anciens OTP
+        Model_OTP.deactivate_old_otps(phone)
+
+        # 🔢 Création d’un nouvel OTP
+        otp_instance = Model_OTP.create_otp(phone)
+
+        # 📤 Préparation du message
+        message = f"Connexion TEMPO\nVotre code de verification est {otp_instance.otp_code}"
+        print(message)  # Pour debug uniquement
+
+        # ✅ Pour envoyer via SMS, décommente ici :
+        try:
+
+            encoded_message = urllib.parse.quote(message)
+            url = (
+                "https://api2.dream-digital.info/api/SendSMS"
+                f"?api_id=API18753314170"
+                f"&api_password=90crxTbtS9"
+                f"&sms_type=T"
+                f"&encoding=T"
+                f"&sender_id=TEMPO-Co"
+                f"&phonenumber={phone}"
+                f"&textmessage={encoded_message}"
+            )
+
             response = requests.get(url)
             result = response.json()
             if result.get("status") == "S":
-                Model_OTP.objects.update_or_create(phone_number=phone, defaults={"code": otp})
                 return Response({"detail": "OTP envoyé pour connexion."})
             return Response({"detail": f"Erreur SMS: {result.get('remarks')}"}, status=400)
         except Exception as e:
             return Response({"detail": f"Erreur d'envoi: {str(e)}"}, status=500)
-
-        # Model_OTP.objects.update_or_create(phone_number=phone, defaults={"code": otp})
-        # print(f"Bienvenue sur BRIGHT\nVotre code de verification est {otp}")
-        # return Response({"detail": "OTP envoyé pour connexion."})
-
 
 class LoginOTPVerifyView(APIView):
     permission_classes = [AllowAny]
@@ -180,23 +195,21 @@ class LoginOTPVerifyView(APIView):
             return Response({"detail": "Utilisateur introuvable."}, status=400)
 
         try:
-            otp_obj = Model_OTP.objects.get(phone_number=phone)
-        except Model_OTP.DoesNotExist:
-            return Response({"detail": "OTP non trouvé."}, status=400)
+            profil = Model_Profil.objects.get(user=user)
+        except Model_Profil.DoesNotExist:
+            return Response({"detail": "Profil introuvable."}, status=400)
 
-        if not otp_obj.is_valid() or str(otp_obj.code) != str(code):
+        if not Model_OTP.verify_otp(phone_number=phone, code=code):
             return Response({"detail": "OTP invalide ou expiré."}, status=400)
 
-        otp_obj.delete()
+        token, _ = Token.objects.get_or_create(user=user)
 
-        refresh = RefreshToken.for_user(user)
-        profil = user.profil
         return Response({
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
             "profil": {
                 "id": profil.id,
                 "pseudo": profil.pseudo,
-                "phone_number": profil.phone_number
+                "phone_number": profil.phone_number,
+                "token": str(token),
+                "uuid": profil.uuid
             }
         })
