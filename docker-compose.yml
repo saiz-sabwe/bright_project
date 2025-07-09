@@ -39,8 +39,8 @@ services:
     image: postgres:15
     restart: always
     environment:
-      POSTGRES_DB: bright_db
-      POSTGRES_USER: bright_user
+#      POSTGRES_DB: bright_db
+#      POSTGRES_USER: bright_user
       POSTGRES_PASSWORD: bright_pass
     volumes:
       - pg_data:/var/lib/postgresql/data
