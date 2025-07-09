@@ -60,6 +60,7 @@ MIDDLEWARE = [
 
 MIGRATION_MODULES = {
     'jet': None,
+    'dashboard': None,
     'jet.dashboard': None,
 }
 
