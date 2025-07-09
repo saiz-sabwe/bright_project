@@ -31,8 +31,8 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    # 'jet.dashboard',
-    #'jet',
+    'jet.dashboard',
+    'jet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -58,10 +58,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-#MIGRATION_MODULES = {
-#    'jet': None,
-#    'jet.dashboard': None,
-#}
+MIGRATION_MODULES = {
+    'jet': None,
+    'jet.dashboard': None,
+}
+
 
 ROOT_URLCONF = 'BRIGHT_NODE.urls'
 
