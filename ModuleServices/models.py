@@ -68,10 +68,11 @@ class Model_Demande(models.Model):
         }
         return messages.get(self.statut, "Statut inconnu.")
 
-    def cloturer_demande(self):
+    def cloturer_demande(self, save=True):
 
         self.isClosed = True
-        self.save()
+        if save:
+            self.save()
 
 class Model_Professionnel(models.Model):
     profil = models.OneToOneField( "ModuleProfil.Model_Profil", on_delete=models.CASCADE, related_name="professionnel", verbose_name="Profil associé")

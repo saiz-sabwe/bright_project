@@ -11,14 +11,14 @@ from .models import Model_Demande
 def valider_demandes(modeladmin, request, queryset):
     for demande in queryset:
         demande.statut = Model_Demande.STATUT_ACCEPTE
-        demande.cloturer_demande()
+        demande.cloturer_demande(save=False)
         demande.save()
 
 @admin.action(description="Refuser les demandes sélectionnées")
 def refuser_demandes(modeladmin, request, queryset):
     for demande in queryset:
         demande.statut = Model_Demande.STATUT_REFUSE
-        demande.cloturer_demande()
+        demande.cloturer_demande(save=False)
         demande.save()
 
 
