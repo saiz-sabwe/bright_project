@@ -4,8 +4,8 @@ networks:
   web_network:
     external: true
 
-volumes:
-  pg_data:
+#volumes:
+#  pg_data:
 
 services:
   django_bright:
@@ -30,8 +30,8 @@ services:
     volumes:
       - .:/app
       - ./media:/app/media
-    depends_on:
-      - pgsql
+#    depends_on:
+#      - pgsql
     networks:
       - web_network
 
