@@ -36,23 +36,23 @@ services:
       - web_network
 
 
-  pgsql:
-    image: postgres:15
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: bright_pass
-    volumes:
-      - pg_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    networks:
-      - web_network
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - "8080:8080"
-    networks:
-      - web_network
+#  pgsql:
+#    image: postgres:15
+#    restart: always
+#    environment:
+#      POSTGRES_PASSWORD: bright_pass
+#    volumes:
+#      - pg_data:/var/lib/postgresql/data
+#    ports:
+#      - "5432:5432"
+#    networks:
+#      - web_network
+#
+#  adminer:
+#    image: adminer
+#    restart: always
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - web_network
 
