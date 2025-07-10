@@ -58,11 +58,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-MIGRATION_MODULES = {
-    'jet': None,
-    'dashboard': None,
-    'jet.dashboard': None,
-}
+# MIGRATION_MODULES = {
+#     'jet': None,
+#     'dashboard': None,
+#     'jet.dashboard': None,
+# }
 
 
 ROOT_URLCONF = 'BRIGHT_NODE.urls'
