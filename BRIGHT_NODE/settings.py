@@ -27,6 +27,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://tempotravaux.com",
+    "https://www.tempotravaux.com",
+]
+
 
 # Application definition
 
