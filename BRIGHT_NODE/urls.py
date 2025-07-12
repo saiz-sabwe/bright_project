@@ -17,6 +17,7 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 
 from BRIGHT_NODE import settings
 
@@ -27,6 +28,8 @@ urlpatterns = [
     path('api/auth/', include('ModuleProfil.urls')),
     path('api/services/', include('ModuleServices.urls')),
     path('fpi/', include('ModuleCarte.urls')),
+    path('', TemplateView.as_view(template_name="home/landing.html"), name='landing'),  # <-- ici
+
 ]
 
 if settings.DEBUG:

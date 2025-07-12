@@ -1,0 +1,279 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tempo Travaux - Trouvez votre professionnel</title>
+    <link rel="icon" href="{% static 'landing_page/favicon.ico' %}" type="image/x-icon">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" href="{% static 'landing_page/style.css' %}">
+</head>
+<body>
+<!-- Header -->
+<header>
+    <div class="header-container">
+        <a href="#" class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-hammer"></i>
+            </div>
+            <div class="logo-text">Tempo<span>.</span></div>
+        </a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="#accueil">Accueil</a></li>
+                <li><a href="#services">Trouver un pro</a></li>
+                <li><a href="#professional">Proposer mes services</a></li>
+                <li><a href="#about">À propos</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <button class="mobile-menu-toggle">
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </button>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero" id="accueil">
+    <div class="hero-content">
+        <h1>Trouvez le professionnel parfait pour vos travaux</h1>
+        <p>Simple, rapide et sécurisé. Connectez-vous avec des experts qualifiés près de chez vous en quelques
+            clics.</p>
+        <div class="cta-buttons">
+            <a href="#contact" class="btn btn-primary">
+                <i class="fas fa-search"></i>
+                Trouver un professionnel
+            </a>
+            <a href="#professional" class="btn btn-secondary">
+                <i class="fas fa-user-plus"></i>
+                Rejoindre le réseau
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- How it Works Section -->
+<section class="how-it-works" id="how-it-works">
+    <div class="container">
+        <div class="section-header">
+            <h2>Comment ça marche ?</h2>
+            <p>Trois étapes simples pour trouver votre professionnel idéal</p>
+        </div>
+        <div class="steps">
+            <div class="step fade-in">
+                <div class="step-icon">
+                    <i class="fas fa-edit"></i>
+                </div>
+                <h3>1. Décrivez vos travaux</h3>
+                <p>Détaillez votre projet en quelques clics. Plus vous êtes précis, mieux nous pouvons vous aider.</p>
+            </div>
+            <div class="step fade-in">
+                <div class="step-icon">
+                    <i class="fas fa-file-invoice"></i>
+                </div>
+                <h3>2. Recevez des devis</h3>
+                <p>Nos professionnels qualifiés vous contactent rapidement avec des propositions adaptées.</p>
+            </div>
+            <div class="step fade-in">
+                <div class="step-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h3>3. Choisissez votre pro</h3>
+                <p>Comparez les offres, consultez les avis et sélectionnez le professionnel qui vous convient.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="services" id="services">
+    <div class="container">
+        <div class="section-header">
+            <h2>Tous vos besoins, un seul endroit</h2>
+            <p>Découvrez notre large gamme de services professionnels</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card fade-in">
+                <div class="service-icon">
+                    <i class="fas fa-wrench"></i>
+                </div>
+                <h3>Plomberie</h3>
+                <p>Réparations, installations, dépannages</p>
+            </div>
+            <div class="service-card fade-in">
+                <div class="service-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>Électricité</h3>
+                <p>Installations électriques, mises aux normes</p>
+            </div>
+            <div class="service-card fade-in">
+                <div class="service-icon">
+                    <i class="fas fa-paint-brush"></i>
+                </div>
+                <h3>Peinture</h3>
+                <p>Intérieur, extérieur, décoration</p>
+            </div>
+            <div class="service-card fade-in">
+                <div class="service-icon">
+                    <i class="fas fa-hammer"></i>
+                </div>
+                <h3>Maçonnerie</h3>
+                <p>Construction, rénovation, aménagement</p>
+            </div>
+            <div class="service-card fade-in">
+                <div class="service-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h3>Jardinage</h3>
+                <p>Entretien, aménagement paysager</p>
+            </div>
+            <div class="service-card fade-in">
+                <div class="service-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h3>Rénovation</h3>
+                <p>Tous travaux de rénovation générale</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Parallax Section -->
+<section class="parallax-section">
+    <div class="parallax-content">
+        <h2>Des milliers de projets réalisés</h2>
+        <p>Rejoignez les professionnels qui font confiance à Tempo pour développer leur activité</p>
+        <div class="parallax-stats">
+            <div class="stat-item">
+                <div class="stat-number">5000+</div>
+                <div class="stat-label">Projets réalisés</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">2000+</div>
+                <div class="stat-label">Professionnels</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Clients satisfaits</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials" id="testimonials">
+    <div class="container">
+        <div class="section-header">
+            <h2>Ce que disent nos clients</h2>
+            <p>Des milliers de projets réalisés avec satisfaction</p>
+        </div>
+        <div class="testimonials-slider">
+            <div class="testimonial fade-in">
+                <div class="testimonial-text">
+                    "Service excellent ! J'ai trouvé un plombier compétent en moins de 2 heures. Travail impeccable et
+                    prix raisonnable."
+                </div>
+                <div class="testimonial-author">Marie Dubois</div>
+                <div class="testimonial-role">Particulier, Paris</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Professional Section -->
+<section class="professional" id="professional">
+    <div class="container">
+        <h2>Vous êtes un professionnel ?</h2>
+        <p>Rejoignez notre réseau et développez votre activité. Accédez à de nouveaux clients et gérez vos projets
+            simplement.</p>
+        <a href="#contact" class="btn-professional">
+            <i class="fas fa-user-plus"></i>
+            Rejoindre le réseau
+        </a>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="contact" id="contact">
+    <div class="container">
+        <div class="section-header">
+            <h2>Contactez-nous</h2>
+            <p>Une question ? Un projet ? Nous sommes là pour vous aider</p>
+        </div>
+        <form class="contact-form">
+            <div class="form-group">
+                <label for="name">Nom complet</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Téléphone</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+            <div class="form-group">
+                <label for="project">Décrivez votre projet</label>
+                <textarea id="project" name="project" placeholder="Décrivez vos travaux en détail..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane"></i>
+                Envoyer ma demande
+            </button>
+        </form>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Tempo Travaux</h3>
+            <p>Votre plateforme de confiance pour tous vos projets de travaux et rénovation.</p>
+        </div>
+        <div class="footer-section">
+            <h3>Services</h3>
+            <ul>
+                <li><a href="#">Plomberie</a></li>
+                <li><a href="#">Électricité</a></li>
+                <li><a href="#">Peinture</a></li>
+                <li><a href="#">Maçonnerie</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Support</h3>
+            <ul>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Aide</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Légal</h3>
+            <ul>
+                <li><a href="#">Conditions générales</a></li>
+                <li><a href="#">Politique de confidentialité</a></li>
+                <li><a href="#">Mentions légales</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Tempo Travaux. Tous droits réservés.</p>
+    </div>
+</footer>
+
+<script src="{% static 'landing_page/script.js' %}"></script>
+
+</body>
+</html>
