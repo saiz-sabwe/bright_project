@@ -6,6 +6,7 @@ class Model_Service(models.Model):
     nom = models.CharField(max_length=100, verbose_name="Nom du service")
     description = models.TextField(verbose_name="Description")
     icon = models.ImageField(upload_to='services/', null=True, blank=True, verbose_name="Icône")
+    rang = models.PositiveIntegerField(default=0,verbose_name="Rang d'affichage")
     message_requete = models.TextField(verbose_name="Message reception du besoin",null=True, blank=True,)
     message_ok = models.TextField(verbose_name="Message ok du besoin",null=True, blank=True,)
     message_ko = models.TextField(verbose_name="Message ko du besoin",null=True, blank=True,)
@@ -22,7 +23,7 @@ class Model_Service(models.Model):
     class Meta:
         verbose_name = "Service"
         verbose_name_plural = "Services"
-        ordering = ("-create",)
+        ordering = ("rang","-create",)
 
 
 class Model_Demande(models.Model):
@@ -58,7 +59,7 @@ class Model_Demande(models.Model):
     class Meta:
         verbose_name = "Demande"
         verbose_name_plural = "Demandes"
-        ordering = ("-create",)
+        ordering = ('isClosed', '-create',)
 
     def get_message_statut(self):
         messages = {
@@ -73,6 +74,7 @@ class Model_Demande(models.Model):
         self.isClosed = True
         if save:
             self.save()
+
 
 class Model_Professionnel(models.Model):
     profil = models.OneToOneField( "ModuleProfil.Model_Profil", on_delete=models.CASCADE, related_name="professionnel", verbose_name="Profil associé")

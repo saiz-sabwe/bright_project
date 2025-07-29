@@ -25,12 +25,11 @@ def refuser_demandes(modeladmin, request, queryset):
 @admin.register(Model_Service)
 class ModelServiceAdmin(ImportExportModelAdmin):
     list_display = (
-        'id', 'nom', 'description', 'create', 'last_update', 'create_by', 'update_by'
+        'id', 'nom', 'description', 'rang', 'create', 'last_update', 'create_by', 'update_by'
     )
     search_fields = ('nom', 'description')
     list_filter = ('create', 'last_update', 'create_by', 'update_by')
     readonly_fields = ('create', 'last_update', 'create_by', 'update_by')
-    ordering = ('-create',)
 
     def save_model(self, request, obj, form, change):
         if not obj.pk:
@@ -50,7 +49,6 @@ class ModelDemandeAdmin(ImportExportModelAdmin):
         'statut', 'service', 'professionnel', 'create', 'last_update'
     )
     readonly_fields = ('create', 'last_update', 'create_by', 'update_by')
-    ordering = ('-create',)
     actions = [valider_demandes, refuser_demandes]
 
     def save_model(self, request, obj, form, change):
@@ -68,7 +66,6 @@ class ModelProfessionnelAdmin(ImportExportModelAdmin):
     search_fields = ('profil__pseudo', 'titre')
     list_filter = ('note', 'create', 'last_update')
     readonly_fields = ('create', 'last_update', 'create_by', 'update_by')
-    ordering = ('-create',)
 
     def save_model(self, request, obj, form, change):
         if not obj.pk:
